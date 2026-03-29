@@ -32,12 +32,18 @@ const seedPosts: Post[] = [
 export default function Home() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [posts, setPosts] = useState<Post[]>(seedPosts)
+  const [isShownLogin, setIsShownLogin] = useState(false)
 
   const handleLogin = (user: User) => {
     setCurrentUser(user)
   }
   const handleLoout = () => {
     setCurrentUser(null)
+    setIsShownLogin(false)
+  }
+
+  const handleIsShownLogin = () => {
+    setIsShownLogin(true)
   }
 
   const handleCreatePost = (content: string) => {
@@ -60,7 +66,7 @@ export default function Home() {
   }
 
   /* 非ログイン時: ログイン画面 */
-  if (!currentUser) {
+  if (!currentUser && isShownLogin) {
     return <LoginScreen onLogin={handleLogin} />;
   }
 
@@ -72,6 +78,7 @@ export default function Home() {
       onLogout={handleLoout}
       onCreatePost={handleCreatePost}
       onDeletePost={hadleDeletePost}
+      onShownLogin={handleIsShownLogin}
     />
   );
 }

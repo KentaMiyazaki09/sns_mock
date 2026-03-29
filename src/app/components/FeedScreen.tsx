@@ -8,12 +8,14 @@ export default function FeedScreen({
   onLogout,
   onDeletePost,
   onCreatePost,
+  onShownLogin
 }: {
   currentUser: User | null;
   posts: Post[];
   onLogout: () => void;
   onDeletePost: (postId: number) => void;
   onCreatePost: (content: string) => void;
+  onShownLogin: () => void;
 }) {
 
   const sortedPosts = useMemo(() => {
@@ -40,7 +42,11 @@ export default function FeedScreen({
                 </button>
               </div>
             ) : (
-              <button className="text-sm">ログイン</button>
+              <button
+                onClick={onShownLogin}
+                className="text-sm">
+                ログイン
+              </button>
             )
           }
         </div>
