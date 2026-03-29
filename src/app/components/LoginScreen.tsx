@@ -2,12 +2,23 @@
 
 import Image from "next/image"
 import { useState } from "react"
+import { User } from "../types/types"
 
-export default function LoginScreen() {
+export default function LoginScreen({
+  onLogin
+}: { onLogin: (user: User) => void }) {
   const [name, setName] = useState("")
+  // const [password, setPassword] = useState("")
 
   const handleLogin = () => {
-    
+    const trimmed = name.trim()
+
+    if (!trimmed) return
+
+    onLogin({
+      id: trimmed.toLocaleLowerCase(),
+      name: trimmed,
+    })
   }
 
   return (
@@ -25,15 +36,15 @@ export default function LoginScreen() {
               className="w-full rounded-md border border-slate-300 px-1 outline-none transition focus:border-slate-500"
             />
           </div>
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-slate-700 pb-1">パスワード</label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-md border border-slate-300 px-1 outline-none transition focus:border-slate-500"
             />
-          </div>
+          </div> */}
 
           <button
             onClick={handleLogin}
@@ -49,13 +60,14 @@ export default function LoginScreen() {
           <Image src="/icons/key.svg" width={16} height={10} alt="" />
           テスト用アカウント
         </p>
+        <p className="text-xs text-slate-600 mb-2">※現在はユーザー名のみでログインできる簡易版</p>
         <ul className="space-y-3 text-sm">
           <li className="flex justify-between bg-white p-3 rounded-xl">
-            <p>hoge</p>
+            <p>Hoge</p>
             <p className="text-slate-500">password</p>
           </li>
           <li className="flex justify-between bg-white p-3 rounded-xl">
-            <p>fuga</p>
+            <p>Fuga</p>
             <p className="text-slate-500">password</p>
           </li>
         </ul>

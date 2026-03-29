@@ -4,9 +4,11 @@ import { Post, User } from "../types/types"
 export default function FeedScreen({
   currentUser,
   posts,
+  onLogout,
 }: {
   currentUser: User | null;
   posts: Post[];
+  onLogout: () => void;
 }) {
 
   const sortedPosts = useMemo(() => {
@@ -24,7 +26,11 @@ export default function FeedScreen({
                 <p className="text-sm before:content-[''] before:inline-block before:w-2.5 before:h-2.5 before:rounded-full before:bg-green-500 before:mr-2 mr-3">
                   {currentUser.name}
                 </p>
-                <button className="text-xs inline-flex items-center rounded-2xl border border-slate-300 px-2 py-1 text-slate-700 transition hover:bg-slate-100">ログアウト</button>
+                <button
+                  onClick={onLogout}
+                  className="text-xs inline-flex items-center rounded-2xl border border-slate-300 px-2 py-1 text-slate-700 transition hover:bg-slate-100">
+                  ログアウト
+                </button>
               </div>
             ) : (
               <button className="text-sm">ログイン</button>
