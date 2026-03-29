@@ -52,7 +52,6 @@ export default function LoginScreen({
             ログイン
           </button>
         </div>
-
       </div>
 
       <div className="mx-auto max-w-md rounded-3xl bg-amber-50 p-8 mt-6 shadow-sm ring-1 ring-amber-200">

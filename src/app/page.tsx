@@ -5,7 +5,7 @@ import FeedScreen from "./components/FeedScreen";
 import LoginScreen from "./components/LoginScreen";
 import { Post, User } from "./types/types";
 
-const posts: Post[] = [
+const seedPosts: Post[] = [
   {
     id: 1,
     content: "今日は Next.js のモックを作っています。",
@@ -31,12 +31,17 @@ const posts: Post[] = [
 
 export default function Home() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
+  const [posts, setPosts] = useState<Post[]>(seedPosts)
 
   const handleLogin = (user: User) => {
     setCurrentUser(user)
   }
   const handleLoout = () => {
     setCurrentUser(null)
+  }
+
+  const hadleDeletePost = (postId: number) => {
+    setPosts(prev => prev.filter(post => post.id !== postId))
   }
 
   /* 非ログイン時: ログイン画面 */
@@ -51,7 +56,7 @@ export default function Home() {
       posts={posts}
       onLogout={handleLoout}
       // onCreatePost={handleCreatePost}
-      // onDeletePost={handleDeletePost}
+      onDeletePost={hadleDeletePost}
       // feedback={feedback}
     />
   );

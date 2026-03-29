@@ -5,10 +5,12 @@ export default function FeedScreen({
   currentUser,
   posts,
   onLogout,
+  onDeletePost,
 }: {
   currentUser: User | null;
   posts: Post[];
   onLogout: () => void;
+  onDeletePost: (postId: number) => void;
 }) {
 
   const sortedPosts = useMemo(() => {
@@ -60,7 +62,11 @@ export default function FeedScreen({
                     <p className="mt-1 text-xs text-slate-500">{post.createdAt}</p>
                     {
                       isOwner && (
-                        <button className="text-xs font-semibold inline-flex items-center rounded-md border border-red-500 px-1 py-0.5 text-red-500 transition hover:bg-slate-100 ml-2">削除</button>
+                        <button
+                          onClick={() => onDeletePost(post.id)}
+                          className="text-xs font-semibold inline-flex items-center rounded-md border border-red-500 px-1 py-0.5 text-red-500 transition hover:bg-slate-100 ml-2">
+                          削除
+                        </button>
                       )
                     }
                   </div>
