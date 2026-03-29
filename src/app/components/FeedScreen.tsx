@@ -14,9 +14,8 @@ export default function FeedScreen({
   }, [posts])
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-28">
-
-      <header className="flex justify-between p-2 sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur-xs">
+    <div>
+      <header className="flex justify-between w-full p-2 fixed top-0 left-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur-xs">
         <h1 className="text-xl font-bold">SNS Mock</h1>
         <div className="flex items-center gap-3">
           {
@@ -34,7 +33,7 @@ export default function FeedScreen({
         </div>
       </header>
 
-      <main className="p-5">
+      <main className="pt-5">
         <div className="space-y-3">
           {sortedPosts.map(post => {
             const isOwner = currentUser?.id === post.userId
