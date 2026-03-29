@@ -8,7 +8,7 @@ import { Post, User } from "./types/types";
 const seedPosts: Post[] = [
   {
     id: 1,
-    content: "今日は Next.js のモックを作っています。",
+    content: "今日はNext.jsのモックを作っています。",
     userId: "hoge",
     userName: "Hoge",
     createdAt: "2026-03-29 10:10",
@@ -22,7 +22,7 @@ const seedPosts: Post[] = [
   },
   {
     id: 3,
-    content: "下からニュッと出る投稿UIにしています。",
+    content: "ラーメンが美味しい季節。",
     userId: "piyo",
     userName: "Piyo",
     createdAt: "2026-03-29 10:24",
@@ -40,6 +40,21 @@ export default function Home() {
     setCurrentUser(null)
   }
 
+  const handleCreatePost = (content: string) => {
+
+    if (!currentUser) return
+
+    const newPost: Post = {
+      id: Date.now(),
+      content,
+      userId: currentUser.id,
+      userName: currentUser.name,
+      createdAt: "just now",
+    }
+
+    setPosts(prev => [newPost, ...prev])
+  }
+
   const hadleDeletePost = (postId: number) => {
     setPosts(prev => prev.filter(post => post.id !== postId))
   }
@@ -55,9 +70,8 @@ export default function Home() {
       currentUser={currentUser}
       posts={posts}
       onLogout={handleLoout}
-      // onCreatePost={handleCreatePost}
+      onCreatePost={handleCreatePost}
       onDeletePost={hadleDeletePost}
-      // feedback={feedback}
     />
   );
 }

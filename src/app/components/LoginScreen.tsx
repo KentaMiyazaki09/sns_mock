@@ -59,7 +59,7 @@ export default function LoginScreen({
           <Image src="/icons/key.svg" width={16} height={10} alt="" />
           テスト用アカウント
         </p>
-        <p className="text-xs text-slate-600 mb-2">※現在はユーザー名のみでログインできる簡易版</p>
+        <p className="text-xs text-slate-600 mb-2">※現在はユーザー名のみでログインする簡易モック版</p>
         <ul className="space-y-3 text-sm">
           <li className="flex justify-between bg-white p-3 rounded-xl">
             <p>Hoge</p>

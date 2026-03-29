@@ -1,21 +1,26 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Post, User } from "../types/types"
+import PostComposer from "./PostComposer";
 
 export default function FeedScreen({
   currentUser,
   posts,
   onLogout,
   onDeletePost,
+  onCreatePost,
 }: {
   currentUser: User | null;
   posts: Post[];
   onLogout: () => void;
   onDeletePost: (postId: number) => void;
+  onCreatePost: (content: string) => void;
 }) {
 
   const sortedPosts = useMemo(() => {
     return [...posts].sort((a, b) => b.id - a.id)
   }, [posts])
+
+  const [composerOpen, setComposerOpen] = useState(false)
 
   return (
     <div>
@@ -78,6 +83,21 @@ export default function FeedScreen({
           })}
         </div>
       </main>
+
+      <button
+        onClick={() => setComposerOpen(true)}
+        className="fixed bottom-6 right-6 z-40 inline-flex h-13 w-13 items-center justify-center rounded-full bg-slate-900 text-white text-2xl shadow-lg transition hover:scale-105"
+        aria-label="投稿を開く"
+      >
+        ＋
+      </button>
+
+      <PostComposer
+        open={composerOpen}
+        onClose={() => setComposerOpen(false)}
+        onSubmit={onCreatePost}
+      />
+
     </div>
   )
 }
