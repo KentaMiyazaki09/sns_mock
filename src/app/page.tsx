@@ -3,7 +3,7 @@
 import { useState } from "react";
 import FeedScreen from "./components/FeedScreen";
 import LoginScreen from "./components/LoginScreen";
-import { Post, User } from "./types/types";
+import { Feedback, Post, User } from "./types/types";
 
 const seedPosts: Post[] = [
   {
@@ -15,14 +15,14 @@ const seedPosts: Post[] = [
   },
   {
     id: 2,
-    content: "これは他人の投稿です。削除はできません。",
+    content: "ラーメンが美味しい季節。",
     userId: "fuga",
     userName: "Fuga",
     createdAt: "2026-03-29 10:18",
   },
   {
     id: 3,
-    content: "ラーメンが美味しい季節。",
+    content: "これは他人の投稿です。削除はできません。",
     userId: "piyo",
     userName: "Piyo",
     createdAt: "2026-03-29 10:24",
@@ -33,13 +33,32 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [posts, setPosts] = useState<Post[]>(seedPosts)
   const [isShownLogin, setIsShownLogin] = useState(false)
+  const [feedback, setFeedback] = useState<Feedback | null>(null)
+
+  const showMessage = ({
+    type,
+    message
+  }: Feedback) => {
+    setFeedback({type, message})
+    setTimeout(() => {
+      setFeedback(null)
+    }, 2500)
+  }
 
   const handleLogin = (user: User) => {
     setCurrentUser(user)
+    showMessage({
+      type: "success",
+      message: `「${user.name}」でログインしました`
+    })
   }
   const handleLoout = () => {
     setCurrentUser(null)
     setIsShownLogin(false)
+    showMessage({
+      type: "success",
+      message: "ログアウトしました"
+    })
   }
 
   const handleIsShownLogin = () => {
@@ -48,7 +67,13 @@ export default function Home() {
 
   const handleCreatePost = (content: string) => {
 
-    if (!currentUser) return
+    if (!currentUser) {
+      showMessage({
+        type: "error",
+        message: "401 Unauthorized: 未ログインのため投稿できません"
+      })
+      return
+    }
 
     const newPost: Post = {
       id: Date.now(),
@@ -59,10 +84,18 @@ export default function Home() {
     }
 
     setPosts(prev => [newPost, ...prev])
+    showMessage({
+      type: "success",
+      message: "投稿を作成しました"
+    })
   }
 
-  const hadleDeletePost = (postId: number) => {
+  const handleDeletePost = (postId: number) => {
     setPosts(prev => prev.filter(post => post.id !== postId))
+    showMessage({
+      type: "success",
+      message: "自分の投稿を削除しました"
+    })
   }
 
   /* 非ログイン時: ログイン画面 */
@@ -77,8 +110,9 @@ export default function Home() {
       posts={posts}
       onLogout={handleLoout}
       onCreatePost={handleCreatePost}
-      onDeletePost={hadleDeletePost}
+      onDeletePost={handleDeletePost}
       onShownLogin={handleIsShownLogin}
+      feedback={feedback}
     />
   );
 }

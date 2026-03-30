@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Post, User } from "../types/types"
+import { Feedback, Post, User } from "../types/types"
 import PostComposer from "./PostComposer";
 
 export default function FeedScreen({
@@ -8,7 +8,8 @@ export default function FeedScreen({
   onLogout,
   onDeletePost,
   onCreatePost,
-  onShownLogin
+  onShownLogin,
+  feedback,
 }: {
   currentUser: User | null;
   posts: Post[];
@@ -16,6 +17,7 @@ export default function FeedScreen({
   onDeletePost: (postId: number) => void;
   onCreatePost: (content: string) => void;
   onShownLogin: () => void;
+  feedback: Feedback | null;
 }) {
 
   const sortedPosts = useMemo(() => {
@@ -53,6 +55,19 @@ export default function FeedScreen({
       </header>
 
       <main className="pt-5">
+        {
+          feedback && (
+            <div
+              className={`mb-4 rounded-2xl px-4 py-3 text-sm ${
+                feedback.type === "success"
+                  ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+                : "bg-red-50 text-red-700 ring-1 ring-red-200"
+              }`}
+            >
+              {feedback.message}
+            </div>
+          )
+        }
         <div className="space-y-3">
           {sortedPosts.map(post => {
             const isOwner = currentUser?.id === post.userId

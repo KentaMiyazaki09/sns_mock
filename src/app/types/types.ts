@@ -11,3 +11,8 @@ export type Post = {
   userName: string;
   createdAt: string;
 }
+
+export type Feedback = {
+  type: "success" | "error";
+  message: string;
+}
