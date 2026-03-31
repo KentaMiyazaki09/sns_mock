@@ -27,6 +27,20 @@ const seedPosts: Post[] = [
     userName: "Piyo",
     createdAt: "2026-03-29 10:24",
   },
+  {
+    id: 4,
+    content: "次は、Next.jsのRoute HandlerでAPIを実装。",
+    userId: "hoge",
+    userName: "Hoge",
+    createdAt: "2026-03-31 15:39",
+  },
+  {
+    id: 5,
+    content: "最後にPrismaでDBとの繋ぎ合わせをやるぞ〜",
+    userId: "hoge",
+    userName: "Hoge",
+    createdAt: "2026-03-31 15:40",
+  },
 ];
 
 export default function Home() {
