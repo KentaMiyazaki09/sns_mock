@@ -3,13 +3,19 @@
  * このファイルでは、Prismaクライアントをシングルトンとして定義し、アプリケーション全体で共有できるようにしています。
  */
 
-import { PrismaClient } from "@prisma/client/extension";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaClient } from "@prisma/client";
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
+const globalForPrisma = globalThis as {
+  prisma?: PrismaClient;
+};
 
-export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+const adapter = new PrismaBetterSqlite3({
+  url: process.env.DATABASE_URL!
+})
 
-// hot reloadingによる追加インスタンスを防ぐため、開発環境ではグローバルオブジェクトにPrismaクライアントを保存
+export const prisma = globalForPrisma.prisma ?? new PrismaClient({adapter});
+
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
 }

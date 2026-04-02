@@ -22,12 +22,3 @@ export async function POST(request: Request) {
   
   return new Response(JSON.stringify(post))
 }
-
-export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-
-  await prisma.post.delete({
-    where: { id: Number(id) },
-  })
-  return new Response(JSON.stringify({ message: "Post deleted" }))
-}
