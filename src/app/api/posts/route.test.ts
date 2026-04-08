@@ -4,7 +4,6 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from "vitest"
-import { prisma } from "@/src/lib/prisma"
 
 import { GET, POST } from "./route"
 
