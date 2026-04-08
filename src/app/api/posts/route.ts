@@ -1,24 +1,46 @@
 import { prisma } from "@/src/lib/prisma"
 
 export async function GET() {
-  const posts = await prisma.post.findMany({
-    orderBy: {
-      createdAt: "desc"
-    }
-  })
-  return new Response(JSON.stringify(posts))
+  try {
+    const posts = await prisma.post.findMany({
+      orderBy: {
+        createdAt: "desc"
+      }
+    })
+    return new Response(JSON.stringify(posts), { status: 200 })
+  } catch {
+    return Response.json(
+      { message: "ポストの取得に失敗しました" },
+      { status: 500 },
+    )
+  }
 }
 
 export async function POST(request: Request) {
-  const body = await request.json()
+  try {
+    const body = await request.json()
+    const { content, userId, userName } = body
 
-  const post = await prisma.post.create({
-    data: {
-      content: body.content,
-      userId: body.userId,
-      userName: body.userName,
+    if (!content || !userId || !userName) {
+      return Response.json(
+        { message: "content, userId, userNameは必須です" },
+        { status: 400 },
+      )
     }
-  })
   
-  return new Response(JSON.stringify(post))
+    const post = await prisma.post.create({
+      data: {
+        content,
+        userId,
+        userName,
+      }
+    })
+    
+    return new Response(JSON.stringify(post), { status: 201 })
+  } catch {
+    return Response.json(
+      { message: "ポストの投稿に失敗しました" },
+      { status: 500 },
+    )
+  }
 }
