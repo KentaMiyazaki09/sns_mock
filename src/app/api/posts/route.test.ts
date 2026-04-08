@@ -8,12 +8,19 @@ import { prisma } from "@/src/lib/prisma"
 
 import { GET, POST } from "./route"
 
+const { mockFindMany, mockCreate } = vi.hoisted(() => {
+  return {
+    mockFindMany: vi.fn(),
+    mockCreate: vi.fn(),
+  }
+})
+
 vi.mock("@/src/lib/prisma", () => {
   return {
     prisma: {
       post: {
-        findMany: vi.fn(),
-        create: vi.fn(),
+        findMany: mockFindMany,
+        create: mockCreate
       },
     },
   }
@@ -43,12 +50,12 @@ describe("posts route", () => {
         },
       ]
 
-      vi.mocked(prisma.post.findMany).mockResolvedValue(mockPosts)
+      mockFindMany.mockResolvedValue(mockPosts)
 
       const response = await GET()
       const json = await response.json()
 
-      expect(prisma.post.findMany).toHaveBeenCalledWith({
+      expect(mockFindMany).toHaveBeenCalledWith({
         orderBy: {
           createdAt: "desc",
         },
@@ -67,7 +74,7 @@ describe("posts route", () => {
     })
 
     it("取得に失敗したら500を返す", async () => {
-      vi.mocked(prisma.post.findMany).mockRejectedValue(new Error("DB error"))
+      mockFindMany.mockRejectedValue(new Error("DB error"))
 
       const response = await GET()
       const json = await response.json()
@@ -93,7 +100,7 @@ describe("posts route", () => {
         createdAt: new Date("2026-04-07T10:00:00.000Z"),
       }
 
-      vi.mocked(prisma.post.create).mockResolvedValue(createdPost)
+      mockCreate.mockResolvedValue(createdPost)
 
       const request = new Request("http://localhost/api/posts", {
         method: "POST",
@@ -106,7 +113,7 @@ describe("posts route", () => {
       const response = await POST(request)
       const json = await response.json()
 
-      expect(prisma.post.create).toHaveBeenCalledWith({
+      expect(mockCreate).toHaveBeenCalledWith({
         data: {
           content: "hello",
           userId: "u1",
@@ -139,7 +146,7 @@ describe("posts route", () => {
       expect(json).toEqual({
         message: "content, userId, userNameは必須です",
       })
-      expect(prisma.post.create).not.toHaveBeenCalled()
+      expect(mockCreate).not.toHaveBeenCalled()
     })
 
     it("userIdがないと400を返す", async () => {
@@ -161,7 +168,7 @@ describe("posts route", () => {
       expect(json).toEqual({
         message: "content, userId, userNameは必須です",
       })
-      expect(prisma.post.create).not.toHaveBeenCalled()
+      expect(mockCreate).not.toHaveBeenCalled()
     })
 
     it("userNameがないと400を返す", async () => {
@@ -183,11 +190,11 @@ describe("posts route", () => {
       expect(json).toEqual({
         message: "content, userId, userNameは必須です",
       })
-      expect(prisma.post.create).not.toHaveBeenCalled()
+      expect(mockCreate).not.toHaveBeenCalled()
     })
 
     it("投稿に失敗したら500を返す", async () => {
-      vi.mocked(prisma.post.create).mockRejectedValue(new Error("DB error"))
+      mockCreate.mockRejectedValue(new Error("DB error"))
 
       const request = new Request("http://localhost/api/posts", {
         method: "POST",
