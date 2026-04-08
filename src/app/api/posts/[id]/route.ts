@@ -4,16 +4,27 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } = await params;
-  const postId = Number(id);
 
-  console.log("DELETE id:", id, "postId:", postId);
+  try {
+    const { id } = await params;
+    const postId = Number(id);
 
-  const result = await prisma.post.deleteMany({
-    where: { id: postId },
-  });
+    if (Number.isNaN(postId)) {
+      return Response.json(
+        { message: "不正なidです" },
+        { status: 400 },
+      )
+    }
 
-  console.log("deleteMany result:", result);
+    const result = await prisma.post.deleteMany({
+      where: { id: postId },
+    });
 
-  return Response.json(result);
+    return Response.json(result, { status: 200 });
+  } catch {
+    return Response.json(
+      { message: "ポストの削除に失敗しました" },
+      { status: 500 }
+    )
+  }
 }
