@@ -1,13 +1,12 @@
+import Link from "next/link"
 import { User } from "../../types/types"
 
 export default function Heaeder({
   currentUser,
   onLogout,
-  onShownLogin,
 }: {
   currentUser: User | null;
   onLogout: () => void;
-  onShownLogin: () => void;
 }) {
   return (
     <header className="flex justify-between w-full p-2 fixed top-0 left-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur-xs">
@@ -26,11 +25,11 @@ export default function Heaeder({
               </button>
             </div>
           ) : (
-            <button
-              onClick={onShownLogin}
+            <Link
+              href="/login"
               className="text-sm">
               ログイン
-            </button>
+            </Link>
           )
         }
       </div>

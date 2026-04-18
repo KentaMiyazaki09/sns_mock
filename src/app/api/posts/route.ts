@@ -1,12 +1,9 @@
 import { prisma } from "@/src/lib/prisma"
+import { getPosts } from "../../../lib/posts"
 
 export async function GET() {
   try {
-    const posts = await prisma.post.findMany({
-      orderBy: {
-        createdAt: "desc"
-      }
-    })
+    const posts = await getPosts()
     return new Response(JSON.stringify(posts), { status: 200 })
   } catch {
     return Response.json(

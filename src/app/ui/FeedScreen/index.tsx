@@ -1,3 +1,5 @@
+"use client"
+
 import { useMemo, useState } from "react";
 import { Feedback, Post, User } from "../../types/types"
 import PostComposer from "./PostComposer";
@@ -12,7 +14,6 @@ export default function FeedScreen({
   onLogout,
   onDeletePost,
   onCreatePost,
-  onShownLogin,
   feedback,
 }: {
   currentUser: User | null;
@@ -20,7 +21,6 @@ export default function FeedScreen({
   onLogout: () => void;
   onDeletePost: (postId: number) => void;
   onCreatePost: (content: string) => void;
-  onShownLogin: () => void;
   feedback: Feedback | null;
 }) {
 
@@ -36,7 +36,6 @@ export default function FeedScreen({
       <Heaeder
         currentUser={currentUser}
         onLogout={onLogout}
-        onShownLogin={onShownLogin}
       />
 
       <main className="pt-5">
