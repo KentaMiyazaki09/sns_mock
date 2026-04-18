@@ -3,11 +3,11 @@
 import { useState } from "react";
 
 export default function PostComposer({
-  open,
+  isOpen,
   onClose,
   onSubmit
 } : {
-  open: boolean;
+  isOpen: boolean;
   onClose: () => void;
   onSubmit: (content: string) => void;
 }) {
@@ -23,7 +23,7 @@ export default function PostComposer({
 
   return (
     <>
-      {open && (
+      {isOpen && (
         <div className="fixed bottom-0 left-0 right-0 z-50 mx-auto w-full rounded-t-[28px] bg-white p-5 shadow-2xl transition-transform duration-300">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-slate-900">投稿を作成</h2>
