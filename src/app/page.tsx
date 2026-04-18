@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import FeedScreen from "./components/FeedScreen";
-import LoginScreen from "./components/LoginScreen";
+import FeedScreen from "./ui/FeedScreen";
+import LoginScreen from "./ui/LoginScreen";
 import { Feedback, Post, User } from "./types/types";
 
 export default function Home() {
