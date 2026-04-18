@@ -1,29 +1,46 @@
 "use client"
 
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { User } from "../types/types"
 
-export default function LoginScreen({
-  onLogin
-}: { onLogin: (user: User) => void }) {
+export default function LoginScreen() {
+  const router = useRouter()
   const [name, setName] = useState("")
-  // const [password, setPassword] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState("")
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     const trimmed = name.trim()
 
     if (!trimmed) return
 
-    onLogin({
-      id: trimmed.toLocaleLowerCase(),
-      name: trimmed,
+    setIsSubmitting(true)
+    setError("")
+
+    const res = await fetch("/api/session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: trimmed,
+      }),
     })
+
+    if (!res.ok) {
+      setError("ログインに失敗しました")
+      setIsSubmitting(false)
+      return
+    }
+
+    router.push("/")
+    router.refresh()
   }
 
   return (
     <>
-      <div className="mx-auto max-w-md rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
+      <div className="mx-auto mt-10 max-w-md rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-200">
         <h1 className="text-xl font-bold mb-5">ログイン</h1>
 
         <div className="space-y-4">
@@ -36,20 +53,18 @@ export default function LoginScreen({
               className="w-full rounded-md border border-slate-300 px-1 outline-none transition focus:border-slate-500"
             />
           </div>
-          {/* <div>
-            <label className="block text-sm font-medium text-slate-700 pb-1">パスワード</label>
-            <input
-              type="text"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-1 outline-none transition focus:border-slate-500"
-            />
-          </div> */}
+
+          {error && (
+            <p className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200">
+              {error}
+            </p>
+          )}
 
           <button
             onClick={handleLogin}
-            className="w-full rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90">
-            ログイン
+            disabled={isSubmitting}
+            className="w-full rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60">
+            {isSubmitting ? "ログイン中..." : "ログイン"}
           </button>
         </div>
       </div>
