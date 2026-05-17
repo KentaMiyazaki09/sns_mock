@@ -1,6 +1,7 @@
+import { auth } from "@/auth"
 import { prisma } from "@/src/lib/prisma"
 import { getPosts } from "../../../lib/posts"
-import { getCurrentUser } from "../../../lib/mock-session"
+import { getCurrentUserFromSession } from "../../../lib/auth-user"
 
 export async function GET() {
   try {
@@ -16,7 +17,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const currentUser = await getCurrentUser()
+    const session = await auth()
+    const currentUser = getCurrentUserFromSession(session)
 
     if (!currentUser) {
       return Response.json(

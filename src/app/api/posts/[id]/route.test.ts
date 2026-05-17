@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { DELETE } from "./route"
 
-const { mockDelete, mockFindUnique, mockGetCurrentUser } = vi.hoisted(() => {
+const { mockDelete, mockFindUnique, mockAuth } = vi.hoisted(() => {
   return {
     mockDelete: vi.fn(),
     mockFindUnique: vi.fn(),
-    mockGetCurrentUser: vi.fn(),
+    mockAuth: vi.fn(),
   }
 })
 
@@ -18,16 +18,18 @@ vi.mock("@/src/lib/prisma", () => ({
   },
 }))
 
-vi.mock("../../../../lib/mock-session", () => ({
-  getCurrentUser: mockGetCurrentUser,
+vi.mock("@/auth", () => ({
+  auth: mockAuth,
 }))
 
 describe("posts/[id] route", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockGetCurrentUser.mockResolvedValue({
-      id: "u1",
-      name: "km",
+    mockAuth.mockResolvedValue({
+      user: {
+        id: "u1",
+        name: "km",
+      },
     })
   })
 
@@ -64,7 +66,7 @@ describe("posts/[id] route", () => {
   })
 
   it("未ログインなら401を返す", async () => {
-    mockGetCurrentUser.mockResolvedValue(null)
+    mockAuth.mockResolvedValue(null)
 
     const request = new Request("http://localhost/api/posts/1", {
       method: "DELETE",

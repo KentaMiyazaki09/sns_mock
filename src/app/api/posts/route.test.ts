@@ -7,11 +7,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { GET, POST } from "./route"
 
-const { mockFindMany, mockCreate, mockGetCurrentUser } = vi.hoisted(() => {
+const { mockFindMany, mockCreate, mockAuth } = vi.hoisted(() => {
   return {
     mockFindMany: vi.fn(),
     mockCreate: vi.fn(),
-    mockGetCurrentUser: vi.fn(),
+    mockAuth: vi.fn(),
   }
 })
 
@@ -26,18 +26,20 @@ vi.mock("@/src/lib/prisma", () => {
   }
 })
 
-vi.mock("../../../lib/mock-session", () => {
+vi.mock("@/auth", () => {
   return {
-    getCurrentUser: mockGetCurrentUser,
+    auth: mockAuth,
   }
 })
 
 describe("posts route", () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockGetCurrentUser.mockResolvedValue({
-      id: "u1",
-      name: "km",
+    mockAuth.mockResolvedValue({
+      user: {
+        id: "u1",
+        name: "km",
+      },
     })
   })
 
@@ -136,7 +138,7 @@ describe("posts route", () => {
     })
 
     it("未ログインなら401を返す", async () => {
-      mockGetCurrentUser.mockResolvedValue(null)
+      mockAuth.mockResolvedValue(null)
 
       const request = new Request("http://localhost/api/posts", {
         method: "POST",
