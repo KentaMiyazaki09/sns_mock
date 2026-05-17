@@ -33,7 +33,7 @@ export default function LoginScreen() {
 
         <div className="space-y-4">
           <p className="text-sm text-slate-600">
-            GitHubアカウントでログインして、Auth.js の標準セッション構成を確認します。
+            GitHubアカウントでログイン。
           </p>
 
           {error && (

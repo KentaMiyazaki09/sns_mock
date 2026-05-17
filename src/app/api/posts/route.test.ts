@@ -51,6 +51,13 @@ describe("posts route", () => {
           content: "new post",
           userId: "u1",
           userName: "km",
+          user: {
+            id: "u1",
+            name: "km",
+            email: null,
+            emailVerified: null,
+            image: null,
+          },
           createdAt: new Date("2026-04-07T10:00:00.000Z"),
         },
         {
@@ -58,6 +65,13 @@ describe("posts route", () => {
           content: "old post",
           userId: "u2",
           userName: "other",
+          user: {
+            id: "u2",
+            name: "other",
+            email: null,
+            emailVerified: null,
+            image: null,
+          },
           createdAt: new Date("2026-04-06T10:00:00.000Z"),
         },
       ]
@@ -68,6 +82,9 @@ describe("posts route", () => {
       const json = await response.json()
 
       expect(mockFindMany).toHaveBeenCalledWith({
+        include: {
+          user: true,
+        },
         orderBy: {
           createdAt: "desc",
         },
@@ -75,11 +92,17 @@ describe("posts route", () => {
       expect(response.status).toBe(200)
       expect(json).toEqual([
         {
-          ...mockPosts[0],
+          id: 2,
+          content: "new post",
+          userId: "u1",
+          userName: "km",
           createdAt: "2026-04-07T10:00:00.000Z",
         },
         {
-          ...mockPosts[1],
+          id: 1,
+          content: "old post",
+          userId: "u2",
+          userName: "other",
           createdAt: "2026-04-06T10:00:00.000Z",
         },
       ])

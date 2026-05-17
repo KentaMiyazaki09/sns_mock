@@ -1,14 +1,8 @@
-// ログインからそれぞれのAPI実行までの流れ
-// 1. GitHubログイン成功
-// 2. jwt callback で token.id を保存
-// 3. session callback で session.user.id を作る
-// 4. page.tsx や API で auth() を呼ぶ
-// 5. session.user.id を currentUser.id として使う
-// 6. 投稿作成・削除の認可に使う
-
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import { DefaultSession } from "next-auth";
+import { prisma } from "@/src/lib/prisma";
 
 function requiredEnv(name: "AUTH_GITHUB_ID" | "AUTH_GITHUB_SECRET") {
   const value = process.env[name];
@@ -28,13 +22,8 @@ declare module "next-auth" {
   }
 }
 
-declare module "@auth/core/jwt" {
-  interface JWT {
-    id?: string;
-  }
-}
-
 export const { auth, handlers, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
   providers: [
     GitHub({
       clientId: requiredEnv("AUTH_GITHUB_ID"),
@@ -45,25 +34,9 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     signIn: "/login",
   },
   callbacks: {
-    // tokenにGithub OAuthから取得したユーザー識別情報を保存
-    // tokenは「Auth.js が内部で持っているログイン状態のデータ箱」
-    // idをsessionを作るときに再利用が可能
-    jwt({ token, account }) {
-      if (account?.provider === "github" && account.providerAccountId) {
-        token.id = account.providerAccountId;
-      }
-
-      if (!token.id && token.sub) {
-        token.id = token.sub;
-      }
-
-      return token;
-    },
-
-    // tokenをclient/serverから使いやすい形に変形
-    session({ session, token }) {
-      if (session.user && token.id) {
-        session.user.id = String(token.id);
+    session({ session, user }) {
+      if (session.user) {
+        session.user.id = user.id;
       }
 
       return session;
