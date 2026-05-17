@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import LoginScreen from "../ui/LoginScreen";
-import { getCurrentUser } from "../../lib/mock-session";
 
 export default async function LoginPage() {
-  const currentUser = await getCurrentUser();
+  const session = await auth();
 
-  if (currentUser) {
+  if (session?.user) {
     redirect("/");
   }
 
