@@ -15,7 +15,7 @@ export async function getPosts(): Promise<Post[]> {
     id: post.id,
     content: post.content,
     userId: post.userId,
-    userName: post.user.name ?? post.userName,
+    userName: post.user.name ?? "Unknown User",
     createdAt: post.createdAt.toISOString(),
   }));
 }

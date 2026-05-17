@@ -50,7 +50,6 @@ describe("posts route", () => {
           id: 2,
           content: "new post",
           userId: "u1",
-          userName: "km",
           user: {
             id: "u1",
             name: "km",
@@ -64,7 +63,6 @@ describe("posts route", () => {
           id: 1,
           content: "old post",
           userId: "u2",
-          userName: "other",
           user: {
             id: "u2",
             name: "other",
@@ -127,7 +125,6 @@ describe("posts route", () => {
         id: 1,
         content: "hello",
         userId: "u1",
-        userName: "km",
         createdAt: new Date("2026-04-07T10:00:00.000Z"),
       }
 
@@ -150,7 +147,6 @@ describe("posts route", () => {
         data: {
           content: "hello",
           userId: "u1",
-          userName: "km",
         },
       })
       expect(response.status).toBe(201)
