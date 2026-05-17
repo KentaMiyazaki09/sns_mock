@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { useState } from "react";
 import FeedScreen from "./ui/FeedScreen";
 import { Feedback, Post, User } from "./types/types";
@@ -12,7 +12,6 @@ export default function HomeClient({
   initialPosts: Post[];
   currentUser: User | null;
 }) {
-  const router = useRouter();
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
 
@@ -39,19 +38,9 @@ export default function HomeClient({
   };
 
   const handleLogout = async () => {
-    const res = await fetch("/api/session", {
-      method: "DELETE",
+    await signOut({
+      callbackUrl: "/login",
     });
-
-    if (!res.ok) {
-      showMessage({
-        type: "error",
-        message: "ログアウトに失敗しました",
-      });
-      return;
-    }
-
-    router.refresh();
   };
 
   const handleCreatePost = async (content: string) => {
@@ -70,8 +59,6 @@ export default function HomeClient({
       },
       body: JSON.stringify({
         content,
-        userId: currentUser.id,
-        userName: currentUser.name,
       }),
     });
 
