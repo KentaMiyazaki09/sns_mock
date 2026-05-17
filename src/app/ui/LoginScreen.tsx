@@ -51,28 +51,6 @@ export default function LoginScreen() {
           </button>
         </div>
       </div>
-
-      <div className="mx-auto max-w-md rounded-3xl bg-amber-50 p-8 mt-6 shadow-sm ring-1 ring-amber-200">
-        <p className="text-xs text-amber-900 font-bold mb-5 flex gap-1">
-          <Image src="/icons/key.svg" width={16} height={10} alt="" />
-          事前準備
-        </p>
-        <p className="text-xs text-slate-600 mb-2">※ `.env.local` に GitHub OAuth の設定が必要です</p>
-        <ul className="space-y-3 text-sm">
-          <li className="flex justify-between bg-white p-3 rounded-xl">
-            <p>AUTH_GITHUB_ID</p>
-            <p className="text-slate-500">required</p>
-          </li>
-          <li className="flex justify-between bg-white p-3 rounded-xl">
-            <p>AUTH_GITHUB_SECRET</p>
-            <p className="text-slate-500">required</p>
-          </li>
-          <li className="flex justify-between bg-white p-3 rounded-xl">
-            <p>AUTH_SECRET</p>
-            <p className="text-slate-500">required</p>
-          </li>
-        </ul>
-      </div>
     </>
   )
 }
