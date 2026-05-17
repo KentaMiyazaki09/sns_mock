@@ -41,7 +41,6 @@ export async function POST(request: Request) {
       data: {
         content,
         userId: currentUser.id,
-        userName: currentUser.name,
       }
     })
     
