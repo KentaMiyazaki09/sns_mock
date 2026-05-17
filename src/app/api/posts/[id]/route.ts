@@ -1,4 +1,5 @@
 import { prisma } from "@/src/lib/prisma"
+import { getCurrentUser } from "../../../../lib/mock-session"
 
 export async function DELETE(
   request: Request,
@@ -6,6 +7,15 @@ export async function DELETE(
 ) {
 
   try {
+    const currentUser = await getCurrentUser()
+
+    if (!currentUser) {
+      return Response.json(
+        { message: "Unauthorized" },
+        { status: 401 },
+      )
+    }
+
     const { id } = await params;
     const postId = Number(id);
 
@@ -16,11 +26,29 @@ export async function DELETE(
       )
     }
 
-    const result = await prisma.post.deleteMany({
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+    })
+
+    if (!post) {
+      return Response.json(
+        { message: "投稿が見つかりません" },
+        { status: 404 },
+      )
+    }
+
+    if (post.userId !== currentUser.id) {
+      return Response.json(
+        { message: "Forbidden" },
+        { status: 403 },
+      )
+    }
+
+    await prisma.post.delete({
       where: { id: postId },
     });
 
-    return Response.json(result, { status: 200 });
+    return Response.json({ ok: true }, { status: 200 });
   } catch {
     return Response.json(
       { message: "ポストの削除に失敗しました" },

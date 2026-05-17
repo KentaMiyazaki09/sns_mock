@@ -1,5 +1,6 @@
 import { prisma } from "@/src/lib/prisma"
 import { getPosts } from "../../../lib/posts"
+import { getCurrentUser } from "../../../lib/mock-session"
 
 export async function GET() {
   try {
@@ -15,12 +16,21 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
-    const { content, userId, userName } = body
+    const currentUser = await getCurrentUser()
 
-    if (!content || !userId || !userName) {
+    if (!currentUser) {
       return Response.json(
-        { message: "content, userId, userNameは必須です" },
+        { message: "Unauthorized" },
+        { status: 401 },
+      )
+    }
+
+    const body = await request.json()
+    const content = typeof body.content === "string" ? body.content.trim() : ""
+
+    if (!content) {
+      return Response.json(
+        { message: "contentは必須です" },
         { status: 400 },
       )
     }
@@ -28,8 +38,8 @@ export async function POST(request: Request) {
     const post = await prisma.post.create({
       data: {
         content,
-        userId,
-        userName,
+        userId: currentUser.id,
+        userName: currentUser.name,
       }
     })
     

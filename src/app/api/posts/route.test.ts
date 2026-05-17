@@ -7,10 +7,11 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 
 import { GET, POST } from "./route"
 
-const { mockFindMany, mockCreate } = vi.hoisted(() => {
+const { mockFindMany, mockCreate, mockGetCurrentUser } = vi.hoisted(() => {
   return {
     mockFindMany: vi.fn(),
     mockCreate: vi.fn(),
+    mockGetCurrentUser: vi.fn(),
   }
 })
 
@@ -19,15 +20,25 @@ vi.mock("@/src/lib/prisma", () => {
     prisma: {
       post: {
         findMany: mockFindMany,
-        create: mockCreate
+        create: mockCreate,
       },
     },
+  }
+})
+
+vi.mock("../../../lib/mock-session", () => {
+  return {
+    getCurrentUser: mockGetCurrentUser,
   }
 })
 
 describe("posts route", () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockGetCurrentUser.mockResolvedValue({
+      id: "u1",
+      name: "km",
+    })
   })
 
   describe("GET", () => {
@@ -86,16 +97,12 @@ describe("posts route", () => {
   })
 
   describe("POST", () => {
-    it("正常なbodyなら投稿を作成して201を返す", async () => {
-      const requestBody = {
+    it("ログイン中のユーザーで投稿を作成して201を返す", async () => {
+      const createdPost = {
+        id: 1,
         content: "hello",
         userId: "u1",
         userName: "km",
-      }
-
-      const createdPost = {
-        id: 1,
-        ...requestBody,
         createdAt: new Date("2026-04-07T10:00:00.000Z"),
       }
 
@@ -106,7 +113,9 @@ describe("posts route", () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify({
+          content: "hello",
+        }),
       })
 
       const response = await POST(request)
@@ -126,16 +135,36 @@ describe("posts route", () => {
       })
     })
 
+    it("未ログインなら401を返す", async () => {
+      mockGetCurrentUser.mockResolvedValue(null)
+
+      const request = new Request("http://localhost/api/posts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: "hello",
+        }),
+      })
+
+      const response = await POST(request)
+      const json = await response.json()
+
+      expect(response.status).toBe(401)
+      expect(json).toEqual({
+        message: "Unauthorized",
+      })
+      expect(mockCreate).not.toHaveBeenCalled()
+    })
+
     it("contentがないと400を返す", async () => {
       const request = new Request("http://localhost/api/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          userId: "u1",
-          userName: "km",
-        }),
+        body: JSON.stringify({}),
       })
 
       const response = await POST(request)
@@ -143,51 +172,7 @@ describe("posts route", () => {
 
       expect(response.status).toBe(400)
       expect(json).toEqual({
-        message: "content, userId, userNameは必須です",
-      })
-      expect(mockCreate).not.toHaveBeenCalled()
-    })
-
-    it("userIdがないと400を返す", async () => {
-      const request = new Request("http://localhost/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: "hello",
-          userName: "km",
-        }),
-      })
-
-      const response = await POST(request)
-      const json = await response.json()
-
-      expect(response.status).toBe(400)
-      expect(json).toEqual({
-        message: "content, userId, userNameは必須です",
-      })
-      expect(mockCreate).not.toHaveBeenCalled()
-    })
-
-    it("userNameがないと400を返す", async () => {
-      const request = new Request("http://localhost/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: "hello",
-          userId: "u1",
-        }),
-      })
-
-      const response = await POST(request)
-      const json = await response.json()
-
-      expect(response.status).toBe(400)
-      expect(json).toEqual({
-        message: "content, userId, userNameは必須です",
+        message: "contentは必須です",
       })
       expect(mockCreate).not.toHaveBeenCalled()
     })
@@ -202,8 +187,6 @@ describe("posts route", () => {
         },
         body: JSON.stringify({
           content: "hello",
-          userId: "u1",
-          userName: "km",
         }),
       })
 

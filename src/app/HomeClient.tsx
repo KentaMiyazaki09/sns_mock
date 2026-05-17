@@ -70,8 +70,6 @@ export default function HomeClient({
       },
       body: JSON.stringify({
         content,
-        userId: currentUser.id,
-        userName: currentUser.name,
       }),
     });
 
