@@ -33,7 +33,7 @@ export default function LoginScreen() {
 
         <div className="space-y-4">
           <p className="text-sm text-slate-600">
-            GitHubアカウントでログイン。
+            GitHubアカウントでログインして、投稿の作成や削除ができます。
           </p>
 
           {error && (
