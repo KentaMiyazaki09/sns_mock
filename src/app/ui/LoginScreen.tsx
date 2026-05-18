@@ -12,7 +12,7 @@ export default function LoginScreen() {
     setIsSubmitting(true)
     setError("")
 
-    const result = await signIn("github", {
+    const result = await signIn("google", {
       callbackUrl: "/",
       redirect: false,
     })
@@ -33,7 +33,7 @@ export default function LoginScreen() {
 
         <div className="space-y-4">
           <p className="text-sm text-slate-600">
-            GitHubアカウントでログインして、投稿の作成や削除ができます。
+            Googleアカウントでログインして、投稿の作成や削除ができます。
           </p>
 
           {error && (
@@ -47,7 +47,7 @@ export default function LoginScreen() {
             disabled={isSubmitting}
             className="flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60">
             <Image src="/icons/key.svg" width={16} height={16} alt="" />
-            {isSubmitting ? "GitHubへ移動中..." : "GitHubでログイン"}
+            {isSubmitting ? "Googleへ移動中..." : "Googleでログイン"}
           </button>
         </div>
       </div>
