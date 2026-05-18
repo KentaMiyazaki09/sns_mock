@@ -1,10 +1,10 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
-import GitHub from "next-auth/providers/github";
+import Google from "next-auth/providers/google";
 import { DefaultSession } from "next-auth";
 import { prisma } from "@/src/lib/prisma";
 
-function requiredEnv(name: "AUTH_GITHUB_ID" | "AUTH_GITHUB_SECRET") {
+function requiredEnv(name: "AUTH_GOOGLE_ID" | "AUTH_GOOGLE_SECRET") {
   const value = process.env[name];
 
   if (!value) {
@@ -25,9 +25,9 @@ declare module "next-auth" {
 export const { auth, handlers, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
-    GitHub({
-      clientId: requiredEnv("AUTH_GITHUB_ID"),
-      clientSecret: requiredEnv("AUTH_GITHUB_SECRET"),
+    Google({
+      clientId: requiredEnv("AUTH_GOOGLE_ID"),
+      clientSecret: requiredEnv("AUTH_GOOGLE_SECRET"),
     }),
   ],
   pages: {
